@@ -55,14 +55,16 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
 	if (den < 0.0001)
 	{
 	    std::cout << "Function CalculateJacobian() Error - Division by 0" << std::endl;
+		return Hj;
 	}
 	else{
-	//compute the Jacobian matrix
-    Hj << px/sqrt(den), py/sqrt(den), 0, 0,
-          -py/den, px/den, 0, 0,
-          py*(vx*py - vy*px)/pow(den,3/2), py*(vy*px - vx*py)/pow(den,3/2),
-          px/sqrt(den), py/sqrt(den); 
+		//compute the Jacobian matrix
+		Hj << px/sqrt(den), py/sqrt(den), 0, 0,
+			  -py/den, px/den, 0, 0,
+			  py*(vx*py - vy*px)/pow(den,1.5), py*(vy*px - vx*py)/pow(den,1.5),
+			  px/sqrt(den), py/sqrt(den); 
 	    
+		return Hj;
 	}
-	return Hj;
+	
 }

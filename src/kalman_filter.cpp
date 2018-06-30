@@ -36,10 +36,10 @@ void KalmanFilter::Update(const VectorXd &z) {
   MatrixXd K = (P_*H_t)*S_i;
   
   //New Estimation
-  x_ = x_+(K*y);
+  x_ += K * y;
   float x_size = x_.size();
   MatrixXd I = MatrixXd::Identity(x_size, x_size);
-  P_ = (I - (K*H_))*P_;
+  P_ -= K * H_ * P_;
 
 }
 
@@ -58,14 +58,7 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
 	VectorXd y = z-z_pred;
 	
 	//Normalizing between -pi & pi
-	while (y(1)>M_PI)
-      {
-          y(1) -= 2 * M_PI;
-      }
-      while (y(1)<-M_PI)
-      {
-          y(1) += 2 * M_PI;
-      }
+	y(1) = atan2(sin(double(y(1))),cos(double(y(1))));
 	
 	MatrixXd H_t = H_.transpose();
 	MatrixXd S = H_*P_*H_t + R_;
@@ -73,8 +66,8 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
 	MatrixXd K = (P_*H_t)*S_i;
 	  
 	//New Estimation
-	x_ = x_+(K*y);
+	x_ += K * y;
 	float x_size = x_.size();
 	MatrixXd I = MatrixXd::Identity(x_size, x_size);
-	P_ = (I - (K*H_))*P_;
+	P_ -= K * H_ *P_;
 }
